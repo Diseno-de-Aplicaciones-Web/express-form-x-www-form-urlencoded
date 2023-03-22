@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formularios</title>
+</head>
+<body>
+
+    <h2>www-form-urlencoded</h2>
+    <form action="/usuario/urlencoded/" method="POST">
+        <label>
+            Nombre:
+            <input name="nombre" type="text">
+        </label>
+        <label>
+            Contraseña:
+            <input name="contraseña" type="password">
+        </label>
+        <fieldset>
+            <legend>Asuntos de interés</legend>
+            <label>
+                Tecnoloxía
+                <input type="checkbox" name="temas" value="tecnologia">
+            </label>
+                <label>
+                Natureza
+                <input type="checkbox" name="temas" value="naturaleza">
+            </label>
+        </fieldset>
+        <fieldset>
+            <legend>Aceptación de las condicions</legend>
+            <label>
+                Acepto
+                <input type="radio" name="aceptacion" value="true">
+            </label>
+            <label>
+                No acepto
+                <input type="radio" name="aceptacion" value="false">
+            </label>
+        </fieldset>
+        <button>Enviar</button>
+    </form>
+
+    <h2>multipart/form-data</h2>
+    <form action="/usuario/multipart/" method="POST" enctype="multipart/form-data">
+        <label>
+            Nombre:
+            <input name="nombre" type="text">
+        </label>
+        <label>
+            Contraseña:
+            <input name="contraseña" type="password">
+        </label>
+        <fieldset>
+            <legend>Asuntos de interés</legend>
+            <label>
+                Tecnoloxía
+                <input type="checkbox" name="temas" value="tecnologia">
+            </label>
+                <label>
+                Natureza
+                <input type="checkbox" name="temas" value="naturaleza">
+            </label>
+        </fieldset>
+        <fieldset>
+            <legend>Aceptación de las condicions</legend>
+            <label>
+                Acepto
+                <input type="radio" name="aceptacion" value="true">
+            </label>
+            <label>
+                No acepto
+                <input type="radio" name="aceptacion" value="false">
+            </label>
+        </fieldset>
+        <button>Enviar</button>
+    </form>
+
+    <h2>JSON</h2>
+    <form id="jsonForm">
+        <label>
+            Nombre:
+            <input name="nombre" type="text">
+        </label>
+        <label>
+            Contraseña:
+            <input name="contraseña" type="password">
+        </label>
+        <fieldset>
+            <legend>Asuntos de interés</legend>
+            <label>
+                Tecnoloxía
+                <input type="checkbox" name="temas" value="tecnologia">
+            </label>
+                <label>
+                Natureza
+                <input type="checkbox" name="temas" value="naturaleza">
+            </label>
+        </fieldset>
+        <fieldset>
+            <legend>Aceptación de las condicions</legend>
+            <label>
+                Acepto
+                <input type="radio" name="aceptacion" value="true">
+            </label>
+            <label>
+                No acepto
+                <input type="radio" name="aceptacion" value="false">
+            </label>
+        </fieldset>
+        <button>Enviar</button>
+    </form>
+
+    <script>
+
+        const selectoFormulario = "#jsonForm"
+        const rutaEndpoint = "/usuario/json/"
+        const metodoEndpoint = "POST"
+
+        const formulario = document.querySelector(selectoFormulario)
+
+        formulario.addEventListener("submit", manejadorSubmit)
+
+        function manejadorSubmit(evento){
+            
+            /*
+             La siguiente linea inpide la recarga de la página
+             durante en el envío del formulario para no interferir
+             con el funcionamiento de las single page applications 
+             montadas con React, Svelte o similares.
+            */
+            evento.preventDefault() 
+            
+            const datosCrudos = new FormData(evento.target)
+            const datosObjeto = {}
+            for ( const esteDato of datosCrudos.keys() ) {
+                const arrayDeDAtos = datosCrudos.getAll(esteDato)
+                datosObjeto[esteDato] = arrayDeDAtos.length > 1 ? arrayDeDAtos : arrayDeDAtos[0]
+            }
+            const datosJSON = JSON.stringify(datosObjeto)
+            fetch(
+                rutaEndpoint,
+                {
+                    method: metodoEndpoint,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: datosJSON
+                }
+            )
+        }
+
+    </script>
+
+</body>
+</html>
